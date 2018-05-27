@@ -6,6 +6,31 @@
 ############################################################
 FROM debian:stretch
 LABEL maintainer="Luong Bui"
+SHELL ["/bin/bash", "-c"]
 
-RUN apt-get update && apt-get -y install vim nano
- 
+ARG flutter_version=v0.4.4-beta
+RUN apt-get update && \
+ apt-get -y install apt-transport-https vim git curl zip xz-utils gnupg lib32stdc++ default-jdk && \
+# Dart
+ sh -c 'curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_unstable.list > /etc/apt/sources.list.d/dart_unstable.list' && \
+ sh -c 'curl https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -' && \
+ sh -c 'curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list' && \
+ apt-get update && \
+ apt-get -y install dart && \
+# Flutter
+ curl -O -J "https://storage.googleapis.com/flutter_infra/releases/beta/linux/flutter_linux_${flutter_version}.tar.xz" && \
+ tar xf "flutter_linux_${flutter_version}.tar.xz" && \
+ rm "flutter_linux_${flutter_version}.tar.xz"
+ENV PATH="${PATH}:/flutter/bin"
+
+# Android tools
+ARG android_platform_version=android-26
+ARG android_build_tools_version=26.0.3
+WORKDIR android-sdk
+RUN curl -O -J "https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" && \
+ unzip sdk-tools-linux-3859397.zip && \
+ rm sdk-tools-linux-3859397.zip && \
+ yes | ./tools/bin/sdkmanager --licenses && \
+ ./tools/bin/sdkmanager "platform-tools" "build-tools;${android_build_tools_version}" "platforms;${android_platform_version}" emulator
+ENV PATH="${PATH}:/android-sdk/tools/bin:/android-sdk/platform-tools:/android-sdk/build-tools/${android_build_tools_version}:/android-sdk/emulator"
+
