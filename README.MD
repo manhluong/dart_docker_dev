@@ -26,7 +26,7 @@ There are no IDEs inside this image.
 - extras;google;m2repository
 
 ### Android Virtual Device
-Name:         test_27_x8
-SDK pakcage:  system-images;android-27;google_apis;x86
-Derived from: "pixel"
+- Name:         test_27_x8
+- SDK package:  system-images;android-27;google_apis;x86
+- Derived from: "pixel"
 
