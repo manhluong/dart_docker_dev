@@ -32,12 +32,20 @@ RUN curl -O -J "https://dl.google.com/android/repository/sdk-tools-linux-3859397
  unzip sdk-tools-linux-3859397.zip && \
  rm sdk-tools-linux-3859397.zip && \
  yes | ./tools/bin/sdkmanager --licenses && \
+ ./tools/bin/sdkmanager --update && \
  ./tools/bin/sdkmanager "platform-tools" \
   "build-tools;${android_build_tools_version}" \
   "platforms;${android_platform_version}" \
   emulator \
   "extras;android;m2repository" \
-  "extras;google;m2repository" \
-  "system-images;android-27;google_apis;x86"
+  "extras;google;m2repository"
 ENV PATH="${PATH}:/android-sdk/tools/bin:/android-sdk/platform-tools:/android-sdk/build-tools/${android_build_tools_version}:/android-sdk/emulator"
+
+# Android Virtual Device
+ARG android_default_test_image="system-images;android-27;google_apis;x86"
+WORKDIR /android-sdk/avd
+RUN sdkmanager ${android_default_test_image}
+RUN avdmanager create avd -n test_27_x86 -k ${android_default_test_image} -p . --device "pixel" --force
+
+WORKDIR /
 

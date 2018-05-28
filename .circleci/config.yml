@@ -74,25 +74,21 @@ workflows:
 
   build_upload:
     jobs:
-
       - build:
           filters:
             branches:
               only:
                 - develop
-
       - build_from_cache:
           filters:
             branches:
               only:
-                -master             
+                - master             
       - upload_hub:
-          requires:
-            - build_from_cache
           filters:
             branches:
               only:
                 - master
-
-
+          requires:
+            - build_from_cache
 
