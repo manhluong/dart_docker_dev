@@ -10,7 +10,8 @@ SHELL ["/bin/bash", "-c"]
 
 ARG flutter_version=v0.4.4-beta
 RUN apt-get update && \
- apt-get -y install apt-transport-https vim git curl zip xz-utils gnupg lib32stdc++ default-jdk && \
+ apt-get -y install apt-transport-https vim git curl zip xz-utils gnupg lib32stdc++ default-jdk \
+  rubygems ruby-dev build-essential && \
 # Dart
  sh -c 'curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_unstable.list > /etc/apt/sources.list.d/dart_unstable.list' && \
  sh -c 'curl https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -' && \
@@ -46,6 +47,9 @@ ARG android_default_test_image="system-images;android-27;google_apis;x86"
 WORKDIR /android-sdk/avd
 RUN sdkmanager ${android_default_test_image}
 RUN avdmanager create avd -n test_27_x86 -k ${android_default_test_image} -p . --device "pixel" --force
+
+# Fastlane
+RUN gem install fastlane -NV
 
 WORKDIR /
 
