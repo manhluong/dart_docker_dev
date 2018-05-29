@@ -51,5 +51,8 @@ RUN avdmanager create avd -n test_27_x86 -k ${android_default_test_image} -p . -
 # Fastlane
 RUN gem install fastlane -NV
 
+# External volumes entry point to attach projects that exist in the host.
+VOLUME /volumes/prj
+
 WORKDIR /
 
