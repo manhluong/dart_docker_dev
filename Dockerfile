@@ -48,11 +48,18 @@ WORKDIR /android-sdk/avd
 RUN sdkmanager ${android_default_test_image}
 RUN avdmanager create avd -n test_27_x86 -k ${android_default_test_image} -p . --device "pixel" --force
 
+WORKDIR /
+
+# Gradle
+ARG gradle_version=gradle-4.1
+RUN curl -L -O "https://services.gradle.org/distributions/${gradle_version}-bin.zip"
+RUN unzip -qq "${gradle_version}-bin.zip"
+ENV GRADLE_HOME="/${gradle_version}"
+ENV PATH="${PATH}:${GRADLE_HOME}/bin"
+
 # Fastlane
 RUN gem install fastlane -NV
 
 # External volumes entry point to attach projects that exist in the host.
 VOLUME /volumes/prj
-
-WORKDIR /
 
